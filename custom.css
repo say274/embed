@@ -1,5 +1,5 @@
 body {
-    background: transparent;
+    background-color: transparent;
     margin: 0;
     overflow: hidden;
 }
@@ -9,7 +9,7 @@ body {
     top: 20px;
     left: 20px;
     padding: 10px;
-    background: rgba(0, 0, 0, 0.5); /* Semi-transparent */
+    background: rgba(0, 0, 0, 0); 
     color: white;
     border-radius: 10px;
 }
