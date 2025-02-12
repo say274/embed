@@ -47,8 +47,8 @@
 
     
   <script>
+
     document.addEventListener("DOMContentLoaded", function() {
-        // Initialize Gauges
         var gauge1 = new JustGage({
             id: "gauge1",
             value: 0,
@@ -69,71 +69,67 @@
             levelColors: ["#FF3D00", "#FFA000", "#4CAF50"]
         });
 
-        // API URLs
-        const TOKEN_URL = "https://portal.solaranalytics.com.au/api/v3/token";
-        const DATA_URL = "https://portal.solaranalytics.com.au/api/v3/live_site_data?site_id=266722&last_six=false&last_hour=false&battery_data=false";
+        // API to get the public token
+        const PUBLIC_AUTH_URL = "https://portal.solaranalytics.com.au/api/v3/token";
 
-        // Function to Get Token
-        async function getAuthToken() {
+        async function getPublicToken() {
+            const credentials = btoa("public-api@solaranalytics.com:weL0veDa2a!"); // Publicly available
             try {
-                const response = await fetch(TOKEN_URL, {
-                    method: "GET",
-                    headers: {
-                        "Accept": "application/json"
-                    }
-                });
-
-                if (!response.ok) throw new Error("Failed to fetch token");
-
-                const data = await response.json();
-                return data.token; // Adjust this if the token is stored differently
-            } catch (error) {
-                console.error("Token fetch error:", error);
-                return null;
-            }
-        }
-
-        // Function to Fetch Energy Data
-        async function fetchData() {
-            const token = await getAuthToken();
-
-            if (!token) {
-                console.error("No token available. Cannot fetch data.");
-                return;
-            }
-
-            try {
-                const response = await fetch(DATA_URL, {
+                const response = await fetch(PUBLIC_AUTH_URL, {
                     method: "GET",
                     headers: {
                         "Accept": "application/json",
-                        "Authorization": `Bearer ${token}`
+                        "Authorization": `Basic ${credentials}`
                     }
                 });
 
-                if (!response.ok) throw new Error("Failed to fetch data");
+                if (!response.ok) throw new Error("Failed to fetch public token");
 
                 const data = await response.json();
+                console.log("Public API Token:", data.token);
 
-                // Extract values (adjust if API structure is different)
-                let energyUsed = data.energy_used || Math.random() * 100; 
+                // Send public token to your backend to authenticate privately
+                fetchBackendData(data.token);
+
+            } catch (error) {
+                console.error("Error fetching public token:", error);
+            }
+        }
+
+        async function fetchBackendData(publicToken) {
+            const BACKEND_URL = "https://your-secure-backend.com/get-energy-data";
+
+            try {
+                const response = await fetch(BACKEND_URL, {
+                    method: "POST",
+                    headers: {
+                        "Accept": "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ publicToken }) // Send public token to backend
+                });
+
+                if (!response.ok) throw new Error("Failed to fetch private energy data");
+
+                const data = await response.json();
+                console.log("Energy Data:", data);
+
+                let energyUsed = data.energy_used || Math.random() * 100;
                 let energyGenerated = data.energy_generated || Math.random() * 100;
 
-                // Update Gauges
                 gauge1.refresh(energyUsed);
                 gauge2.refresh(energyGenerated);
 
             } catch (error) {
-                console.error("Data fetch error:", error);
+                console.error("Error fetching private energy data:", error);
             }
         }
 
-        // Fetch Data Every 5 Seconds
-        setInterval(fetchData, 5000);
-
-        // Fetch Data on Page Load
-        fetchData();
+        // Start the process
+        getPublicToken();
+        setInterval(getPublicToken, 5000); // Refresh every 5 sec
     });
+
     </script>
 
 </body>
