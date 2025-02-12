@@ -45,29 +45,30 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            var gauge1 = new JustGage({
-                id: "gauge1",
-                value: 65, // Adjust starting value
-                min: 0,
-                max: 100,
-                title: "",
-                label: "%",
-                levelColors: ["#FF3D00", "#FFA000", "#4CAF50"]
-            });
-
-            var gauge2 = new JustGage({
-                id: "gauge2",
-                value: 80, // Adjust starting value
-                min: 0,
-                max: 100,
-                title: "",
-                label: "%",
-                levelColors: ["#FF3D00", "#FFA000", "#4CAF50"]
-            });
+    
+      <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        new JustGage({
+            id: "gauge1",
+            value: 65,
+            min: 0,
+            max: 100,
+            title: "Energy Used",
+            label: "%",
+            levelColors: ["#FF3D00", "#FFA000", "#4CAF50"]
         });
-    </script>
+
+        new JustGage({
+            id: "gauge2",
+            value: 80,
+            min: 0,
+            max: 100,
+            title: "Energy Generated",
+            label: "%",
+            levelColors: ["#FF3D00", "#FFA000", "#4CAF50"]
+        });
+    });
+</script>
 
 </body>
 </html>
