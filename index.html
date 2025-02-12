@@ -4,6 +4,10 @@
     <style>
         body {background-color: rgba(0, 0, 0, 0);}
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/raphael"></script>
+    <script src="https://cdn.jsdelivr.net/npm/justgage"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="custom.css">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,6 +21,56 @@
     </style>
 </head>
 <body>
+    <div style="display: flex; justify-content: center; gap: 20px;">
+        <canvas id="gauge1" width="200" height="200"></canvas>
+    <canvas id="gauge2" width="200" height="200"></canvas>
+    </div>
     <h1 style="color: black;">This is a transparent page!</h1>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var gauge1 = new JustGage({
+                id: "gauge1",
+                value: 555,
+                min: 0,
+                max: 1000,
+                title: "Energy Consumed (Wh)"
+            });
+    
+            var gauge2 = new JustGage({
+                id: "gauge2",
+                value: 555,
+                min: 0,
+                max: 10000,
+                title: "Energy Generated (Wh)"
+            });
+        });
+    </script>
+    <script>
+        function createGauge(canvasId, value, label) {
+            var ctx = document.getElementById(canvasId).getContext("2d");
+            new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    datasets: [{
+                        data: [value, 100 - value],
+                        backgroundColor: ["#4CAF50", "#ddd"]
+                    }]
+                },
+                options: {
+                    circumference: Math.PI,
+                    rotation: Math.PI,
+                    cutout: "75%",
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+    
+        document.addEventListener("DOMContentLoaded", function() {
+            createGauge("gauge1", 5, "Energy Consumed");
+            createGauge("gauge2", 5, "Energy Generated");
+        });
+    </script>
 </body>
 </html>
