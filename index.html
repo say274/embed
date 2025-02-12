@@ -46,29 +46,49 @@
     </div>
 
     
-      <script>
-    document.addEventListener("DOMContentLoaded", function() {
-        new JustGage({
-            id: "gauge1",
-            value: 65,
-            min: 0,
-            max: 100,
-            title: "Energy Used",
-            label: "%",
-            levelColors: ["#FF3D00", "#FFA000", "#4CAF50"]
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Initialize Gauges
+            var gauge1 = new JustGage({
+                id: "gauge1",
+                value: 0, // Initial Value
+                min: 0,
+                max: 100,
+                title: "Energy Used",
+                label: "%",
+                levelColors: ["#FF3D00", "#FFA000", "#4CAF50"]
+            });
+    
+            var gauge2 = new JustGage({
+                id: "gauge2",
+                value: 0, // Initial Value
+                min: 0,
+                max: 100,
+                title: "Energy Generated",
+                label: "%",
+                levelColors: ["#FF3D00", "#FFA000", "#4CAF50"]
+            });
+    
+            // Function to Fetch Data
+            function fetchData() {
+                fetch("https://portal.solaranalytics.com.au/api/v3/live_site_data?site_id=266722&last_six=false&last_hour=false&battery_data=false
+")
+                    .then(response => response.json()) // Convert response to JSON
+                    .then(data => {
+                        // Assume API returns { energy_used: 65, energy_generated: 80 }
+                        gauge1.refresh(data.energy_used);
+                        gauge2.refresh(data.energy_generated);
+                    })
+                    .catch(error => console.error("Error fetching data:", error));
+            }
+    
+            // Fetch Data Every 5 Seconds
+            setInterval(fetchData, 30000);
+    
+            // Fetch Data on Page Load
+            fetchData();
         });
-
-        new JustGage({
-            id: "gauge2",
-            value: 80,
-            min: 0,
-            max: 100,
-            title: "Energy Generated",
-            label: "%",
-            levelColors: ["#FF3D00", "#FFA000", "#4CAF50"]
-        });
-    });
-</script>
+    </script>
 
 </body>
 </html>
